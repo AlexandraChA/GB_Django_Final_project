@@ -104,54 +104,63 @@ def get_client_orders(request, id):
     logger.info('Getting client orders page was requested.')
     command = Command_get_orders_clientID()
     orders, goods = command.handle(id)
-    client_info = orders[0][orders[0].find('client:'):orders[0].find(', products')]
     context = dict()
-    context['client_info'] = client_info
-    final_orders_7 = []
-    final_orders_30 = []
-    final_orders_365 = []
-    for i, ord in enumerate(orders):
-        days_from_order = (datetime.datetime.strptime('2024-12-31', '%Y-%m-%d') - datetime.datetime.strptime(ord[ord.find('order date:')+12:], '%Y-%m-%d')).days
-        if days_from_order <= 7:
-            final_orders_7.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
-        if days_from_order <= 30:
-            final_orders_30.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
-        if days_from_order <= 365:
-            final_orders_365.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
-    context['client_orders_7'] = final_orders_7
-    context['client_orders_30'] = final_orders_30
-    context['client_orders_365'] = final_orders_365
-    final_products_7 = []
-    final_products_30 = []
-    final_products_365 = []
-    for k,v in goods.items():
-        res_7 = [i for i in final_orders_7 if k in i]
-        if res_7 != []:
-            final_products_7.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-            final_products_30.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-            final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-        res_30 =[i for i in final_orders_30 if k in i]
-        if res_7 == [] and res_30 != []:
-            final_products_30.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-            final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-        res_365 = [i for i in final_orders_365 if k in i]
-        if res_7 == [] and res_30 == [] and res_365 != []:
-            final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
-    context['client_orders_products_7'] = final_products_7
-    context['client_orders_products_30'] = final_products_30
-    context['client_orders_products_365'] = final_products_365
-    if final_products_7 != []:
+    if orders != []:
+        client_info = orders[0][orders[0].find('client:'):orders[0].find(', products')]
+        context['client_info'] = client_info
+        final_orders_7 = []
+        final_orders_30 = []
+        final_orders_365 = []
+        for i, ord in enumerate(orders):
+            days_from_order = (datetime.datetime.strptime('2024-12-31', '%Y-%m-%d') - datetime.datetime.strptime(ord[ord.find('order date:')+12:], '%Y-%m-%d')).days
+            if days_from_order <= 7:
+                final_orders_7.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
+            if days_from_order <= 30:
+                final_orders_30.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
+            if days_from_order <= 365:
+                final_orders_365.append(f"Order №{i+1}: {ord[ord.find('total'):]}")
+        context['client_orders_7'] = final_orders_7
+        context['client_orders_30'] = final_orders_30
+        context['client_orders_365'] = final_orders_365
+        final_products_7 = []
+        final_products_30 = []
+        final_products_365 = []
+        for k,v in goods.items():
+            res_7 = [i for i in final_orders_7 if k in i]
+            if res_7 != []:
+                final_products_7.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
+                final_products_30.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
+                final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
+            res_30 =[i for i in final_orders_30 if k in i]
+            if res_7 == [] and res_30 != []:
+                final_products_30.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
+                final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
+            res_365 = [i for i in final_orders_365 if k in i]
+            if res_7 == [] and res_30 == [] and res_365 != []:
+                final_products_365.append(f"Product №{i+1}{v[v.find(': '):v.find('descr')]} {v[v.find('price'):v.find(', quan')]}")
         context['client_orders_products_7'] = final_products_7
-    else:
-        context['client_orders_products_7'] = ['Товаров за данный период нет']
-    if final_products_30 != []:
         context['client_orders_products_30'] = final_products_30
-    else:
-        context['client_orders_products_30'] = ['Товаров за данный период нет']
-    if final_products_365 != []:
         context['client_orders_products_365'] = final_products_365
+        if final_products_7 != []:
+            context['client_orders_products_7'] = final_products_7
+        else:
+            context['client_orders_products_7'] = ['Товаров за данный период нет']
+        if final_products_30 != []:
+            context['client_orders_products_30'] = final_products_30
+        else:
+            context['client_orders_products_30'] = ['Товаров за данный период нет']
+        if final_products_365 != []:
+            context['client_orders_products_365'] = final_products_365
+        else:
+            context['client_orders_products_365'] = ['Товаров за данный период нет']
     else:
-        context['client_orders_products_365'] = ['Товаров за данный период нет']
+        context['client_orders_products_365'] = [None]
+        context['client_orders_products_30'] = [None]
+        context['client_orders_products_7'] = [None]
+        context['client_orders_7'] = [None]
+        context['client_orders_30'] = [None]
+        context['client_orders_365'] = [None]
+        context['client_info'] = ['У данного клиента нет заказов']
     return render(request, "get_client_orders.html", context = context)
 
 
