@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Orders</title>
+</head>
+
+<body>
+    <h3>Client Information:</h3>
+    <p>{{client_info}}</p>
+
+    <h3>Client Orders last 7 days</h3>
+    {% for e in client_orders_7 %}
+    <div>
+        {{e}}
+    </div>
+    {% endfor %}
+    <h4>Products from these orders</h4>
+    {% for n in client_orders_products_7 %}
+    <div>
+        {{n}}
+    </div>
+    {% endfor %}
+
+    <h3>Client Orders last 30 days</h3>
+    {% for e in client_orders_30 %}
+    <div>
+        {{e}}
+    </div>
+    {% endfor %}
+    <h4>Products from these orders</h4>
+    {% for n in client_orders_products_30 %}
+    <div>
+        {{n}}
+    </div>
+    {% endfor %}
+
+    <h3>Client Orders last 365 days</h3>
+    {% for e in client_orders_365 %}
+    <div>
+        {{e}}
+    </div>
+    {% endfor %}
+    <h4>Products from these orders</h4>
+    {% for n in client_orders_products_365 %}
+    <div>
+        {{n}}
+    </div>
+    {% endfor %}
+</body>
+
+</html>
